@@ -1,0 +1,33 @@
+---
+import Base from '@/layouts/Base.astro';
+import { CheckoutForm } from '@/components/islands/CheckoutForm';
+import { getProductCommerce } from '@/lib/shopify/catalog';
+import { product } from '@/data/product';
+
+const commerceEnabled = product.commerce.shopifyHandle.trim().length > 0;
+const commerce = commerceEnabled ? await getProductCommerce() : null;
+---
+
+<Base title={commerce ? `Finalizar compra — ${product.brand}` : `Compra no disponible — ${product.brand}`} description={commerce ? 'Completa tus datos de envío y pago.' : 'La compra online todavía no está habilitada para este producto.'}>
+  {
+    commerce ? (
+      <main class="mx-auto max-w-lg px-5 py-8">
+        <h1 class="mb-6 text-display">Finalizar compra</h1>
+        <CheckoutForm client:load commerce={commerce} />
+      </main>
+    ) : (
+      <main class="grid min-h-screen place-items-center bg-bone px-5 py-12">
+        <section class="w-full max-w-xl rounded-card bg-white p-7 text-center shadow-lift">
+          <p class="text-eyebrow font-bold uppercase text-grape">Modo catálogo</p>
+          <h1 class="mt-3 text-display">Compra online desactivada</h1>
+          <p class="mt-3 text-sm leading-relaxed text-steel">
+            No se ha configurado un handle de Shopify real para este pulverizador. Para proteger el checkout, no se aceptan pedidos ni se muestran precios hasta verificar el catálogo.
+          </p>
+          <a href="/" class="mt-6 inline-flex rounded-pill bg-grape px-5 py-3 text-sm font-bold text-white hover:bg-grape-dark">
+            Volver al producto
+          </a>
+        </section>
+      </main>
+    )
+  }
+</Base>

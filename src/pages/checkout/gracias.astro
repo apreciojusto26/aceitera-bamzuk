@@ -1,0 +1,31 @@
+---
+import Base from '@/layouts/Base.astro';
+import { OrderConfirmation } from '@/components/islands/OrderConfirmation';
+import { product } from '@/data/product';
+
+const commerceEnabled = product.commerce.shopifyHandle.trim().length > 0;
+const paymentRef = Astro.url.searchParams.get('ref') ?? '';
+---
+
+<Base title={commerceEnabled ? 'Gracias por tu compra' : `Compra no disponible — ${product.brand}`} description={commerceEnabled ? 'Confirmando tu pedido.' : 'El comercio está desactivado en modo catálogo.'}>
+  {
+    commerceEnabled ? (
+      <main class="mx-auto max-w-lg px-5 py-12 text-center">
+        <OrderConfirmation client:load paymentRef={paymentRef} />
+      </main>
+    ) : (
+      <main class="grid min-h-screen place-items-center bg-bone px-5 py-12">
+        <section class="w-full max-w-xl rounded-card bg-white p-7 text-center shadow-lift">
+          <p class="text-eyebrow font-bold uppercase text-grape">Modo catálogo</p>
+          <h1 class="mt-3 text-display">No hay un pedido que confirmar</h1>
+          <p class="mt-3 text-sm leading-relaxed text-steel">
+            El checkout está desactivado hasta configurar y verificar el producto real en Shopify. Esta página no consulta pagos, pedidos ni estados externos.
+          </p>
+          <a href="/" class="mt-6 inline-flex rounded-pill bg-grape px-5 py-3 text-sm font-bold text-white hover:bg-grape-dark">
+            Volver al producto
+          </a>
+        </section>
+      </main>
+    )
+  }
+</Base>

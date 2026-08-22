@@ -1,0 +1,49 @@
+---
+import Base from '@/layouts/Base.astro';
+import UtilityBar from '@/components/sections/01-utility-bar.astro';
+import SiteHeader from '@/components/sections/02-site-header.astro';
+import Hero from '@/components/sections/03-hero.astro';
+import BuyBox from '@/components/sections/05-buy-box.astro';
+import HowItWorks from '@/components/sections/06-how-it-works.astro';
+import FeaturedTestimonial from '@/components/sections/07-featured-testimonial.astro';
+import Faq from '@/components/sections/08-faq.astro';
+import ReviewsReel from '@/components/sections/10-reviews-reel.astro';
+import Guarantee from '@/components/sections/12-guarantee.astro';
+import ResultsGallery from '@/components/sections/13-results-gallery.astro';
+import SiteFooter from '@/components/sections/14-site-footer.astro';
+import StickyBar from '@/components/sections/15-sticky-bar.astro';
+import { CartDrawer } from '@/components/islands/CartDrawer';
+import { getProductCommerce } from '@/lib/shopify/catalog';
+import { product } from '@/data/product';
+
+// The landing remains statically prerendered. Commerce is intentionally not
+// initialized until a real Shopify handle exists for this product.
+export const prerender = true;
+
+const title = `${product.name} — ${product.tagline}`;
+const description = product.subtagline;
+const commerceEnabled = product.commerce.shopifyHandle.trim().length > 0;
+const commerce = commerceEnabled ? await getProductCommerce() : null;
+---
+
+<Base title={title} description={description}>
+  <UtilityBar />
+  <SiteHeader />
+  <main>
+    <div class="bg-white">
+      <div class="xl:mx-auto xl:grid xl:w-full xl:max-w-[80rem] xl:grid-cols-[minmax(0,1.1fr)_minmax(25rem,0.9fr)] xl:items-start xl:gap-8 xl:px-8 xl:py-8">
+        <Hero />
+        <BuyBox />
+      </div>
+    </div>
+    <HowItWorks />
+    <ResultsGallery />
+    <FeaturedTestimonial />
+    <ReviewsReel />
+    <Guarantee />
+    <Faq />
+  </main>
+  <SiteFooter />
+  {commerce && <StickyBar />}
+  {commerce && <CartDrawer client:load commerce={commerce} />}
+</Base>

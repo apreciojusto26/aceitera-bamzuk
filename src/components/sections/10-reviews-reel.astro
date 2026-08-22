@@ -1,0 +1,29 @@
+---
+import Container from '@/components/ui/Container.astro';
+import WaveDivider from '@/components/ui/WaveDivider.astro';
+import { ReviewCarousel } from '@/components/islands/ReviewCarousel';
+import { testimonials } from '@/data/testimonials';
+
+const reelReviews = testimonials.filter((t) => t.variant === 'reel');
+---
+
+<div class="bg-white">
+  <WaveDivider fill="grape-tint" />
+</div>
+
+<div class="bg-grape-tint">
+  <section class="mx-3 rounded-card bg-grape-tint py-10 md:mx-6 md:py-12 xl:mx-auto xl:max-w-[80rem]">
+    <Container>
+      <div>
+        <p class="text-eyebrow font-bold uppercase text-grape">Opiniones del producto</p>
+        <h2 class="mt-1 text-display md:text-4xl">Reseñas conservadas de la fuente</h2>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-steel">
+          Textos, puntuaciones, autores y fechas proceden del scrape asociado a este producto. No afirmamos verificación ni ubicación cuando la fuente no las aporta.
+        </p>
+        <div class="mt-6">
+        <ReviewCarousel client:visible reviews={reelReviews} />
+        </div>
+      </div>
+    </Container>
+  </section>
+</div>

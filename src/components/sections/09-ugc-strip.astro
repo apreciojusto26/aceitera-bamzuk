@@ -1,0 +1,19 @@
+---
+import Container from '@/components/ui/Container.astro';
+import Media from '@/components/ui/Media.astro';
+import { product } from '@/data/product';
+---
+
+<section class="overflow-hidden bg-white py-8" aria-label="Vistas del producto">
+  <Container>
+    <div class="flex gap-3 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {
+        product.ugc.map((item) => (
+          <div class="w-48 shrink-0">
+            <Media media={item} rounded="rounded-tile" class="aspect-square w-full" />
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+</section>

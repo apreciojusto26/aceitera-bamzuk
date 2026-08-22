@@ -1,0 +1,41 @@
+---
+import Container from '@/components/ui/Container.astro';
+import { HeroCarousel } from '@/components/islands/HeroCarousel';
+import { product } from '@/data/product';
+import { resolveMediaList } from '@/lib/resolve-media';
+
+const resolvedImages = await resolveMediaList(product.gallery, 'gallery');
+---
+
+<section class="min-w-0 bg-white pb-6 pt-0">
+  <Container>
+    <div class="-mx-5 md:mx-auto md:max-w-[42rem] xl:max-w-[40rem]">
+      <HeroCarousel client:visible images={resolvedImages} />
+
+      <div class="mt-5 px-5 text-center md:px-0">
+        <h1 class="text-4xl tracking-tight md:text-5xl">
+          <span class="animate-shine bg-[linear-gradient(110deg,var(--color-grape-deep)_25%,var(--color-grape-soft)_50%,var(--color-grape-deep)_75%)] bg-[length:200%_auto] bg-clip-text text-transparent">
+            Pulveriza o vierte,<br />tú eliges.
+          </span>
+        </h1>
+
+        <div class="mt-3 flex flex-wrap justify-center gap-2">
+          {
+            product.heroPills.map((label, index) => (
+              <span
+                class:list={[
+                  'rounded-pill px-3 py-2 text-xs font-semibold shadow-card',
+                  index === 0 ? 'bg-grape-tint text-grape-deep' : 'bg-gold-tint text-graphite',
+                ]}
+              >
+                {label}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </Container>
+
+  <div id="hero-end" class="h-px w-full" aria-hidden="true"></div>
+</section>

@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "productId": "prd_mt1ihbl2-bfc99f1a",
+  "slug": "olzura-oil-sprayer",
+  "lineage": "scraped",
+  "sourceUrl": "https://es.aliexpress.com/item/1005007502111078.html",
+  "itemId": "1005007502111078",
+  "productName": "Pulverizador 2 en 1 de 1 a 4 piezas, botella vacía de aceite, contenedor de aceite de plástico, dispensador, vaporizador, cocina, barbacoa, utensilios de cocina para acampar",
+  "jobs": {
+    "scrape": null,
+    "content": null,
+    "generate": null
+  },
+  "timestamps": {
+    "scrapedAt": "2026-08-20T12:43:46.577Z",
+    "contentAt": null,
+    "generatedAt": null
+  },
+  "assets": [
+    {
+      "src": "output/images/img_0.webp",
+      "dest": "src/assets/product/gallery-01.webp",
+      "bytes": 140824,
+      "sha256": "f5f5dcdec3a3ad8bb4e28dd7abefe327e4db939b6d3a1fc14d4a995ed446d6e7"
+    },
+    {
+      "src": "output/images/img_1.webp",
+      "dest": "src/assets/product/gallery-02.webp",
+      "bytes": 100678,
+      "sha256": "26abdc503e5ead4266fee72ab47cb7e6c69cdd7f498d85c683e74dcde37d0313"
+    },
+    {
+      "src": "output/images/img_2.webp",
+      "dest": "src/assets/product/gallery-03.webp",
+      "bytes": 95506,
+      "sha256": "67fb30d79f3236ff32a8e9173713d132e422bb677598f60f1161f556c621ac0b"
+    },
+    {
+      "src": "output/images/img_3.webp",
+      "dest": "src/assets/product/gallery-04.webp",
+      "bytes": 135740,
+      "sha256": "f22384e94da972fcf66136ff6e031d1ba45da5f9a0387b8d36e45c917574e00a"
+    },
+    {
+      "src": "output/images/img_4.webp",
+      "dest": "src/assets/product/gallery-05.webp",
+      "bytes": 189926,
+      "sha256": "de13c8b3c5c10a093321ff50a65f2962ab2698d7f674ddb4027fb148d0ea6869"
+    },
+    {
+      "src": "output/images/img_5.webp",
+      "dest": "src/assets/product/step-01.webp",
+      "bytes": 269868,
+      "sha256": "7cfadd92998d6742ca7250850e25a43fe59e4397474008e83516fbf26a3cc12f"
+    },
+    {
+      "src": "output/images/img_6.webp",
+      "dest": "src/assets/product/ugc-01.webp",
+      "bytes": 26976,
+      "sha256": "0b33e1540bdc4f4f68754e18232b7daa0e1ba2885b05c042d517a6fc041b8110"
+    },
+    {
+      "src": "output/images/img_7.webp",
+      "dest": "src/assets/product/ugc-02.webp",
+      "bytes": 26878,
+      "sha256": "5541e085b574d527c5201ef1d70f3f3e6f440ff3556e9dd533cb6c94feaf9a2f"
+    }
+  ],
+  "assetsSourceDir": "output/images",
+  "assetsUnmatched": [],
+  "template": {
+    "dir": "/Users/gbritez/Desktop/dev/drop-one-product",
+    "commit": "00d63b5b64bd17eb894b857568f836a02853c779"
+  },
+  "generator": {
+    "script": null,
+    "schema": 1
+  },
+  "flags": {
+    "force": false
+  }
+}
