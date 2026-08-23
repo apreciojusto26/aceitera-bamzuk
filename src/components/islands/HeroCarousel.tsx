@@ -27,19 +27,19 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
 
   return (
     <div>
-      <div className="relative mx-auto w-full max-w-[34rem]">
+      <div className="relative mx-auto w-full max-w-[32rem] lg:max-w-[35rem]">
         <button
           ref={mainTriggerRef}
           type="button"
           onClick={() => $lightboxIndex.set(activeIndex)}
           aria-label={`Ampliar imagen: ${active.alt}`}
-          className="block w-full overflow-hidden rounded-[2rem] motion-safe:transition-transform"
+          className="block w-full overflow-hidden rounded-card motion-safe:transition-transform"
         >
           {active.placeholder ? (
             <PlaceholderShot
               ratio="1/1"
               alt={active.alt}
-              rounded="rounded-[2rem]"
+              rounded="rounded-card"
               className="w-full"
             />
           ) : (
@@ -49,7 +49,7 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
               width={active.width}
               height={active.height}
               alt={active.alt}
-              className="aspect-square max-h-[30rem] w-full rounded-[2rem] bg-white object-contain p-2 md:max-h-[34rem] md:p-4"
+              className="aspect-square w-full rounded-card bg-white object-cover"
             />
           )}
         </button>

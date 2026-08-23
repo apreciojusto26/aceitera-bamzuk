@@ -26,23 +26,29 @@ type Cell =
 
 const cells: Cell[] = [];
 
+// Cada mitad de la pista debe medir más que cualquier viewport (incl. ultra-wide)
+// para que el bucle -50% sea perfecto y nunca entre espacio en blanco.
+const REPEATS_PER_HALF = 4;
+
 for (const copy of [0, 1]) {
-  for (const slot of slots) {
-    if (slot.kind === 'video') {
-      cells.push({ kind: 'video', src: slot.src, alt: slot.alt, copy });
-      continue;
+  for (let repeat = 0; repeat < REPEATS_PER_HALF; repeat += 1) {
+    for (const slot of slots) {
+      if (slot.kind === 'video') {
+        cells.push({ kind: 'video', src: slot.src, alt: slot.alt, copy });
+        continue;
+      }
+      const media = await resolveMedia({ asset: slot.asset, alt: slot.alt, ratio: '9/16' }, slot.asset);
+      if (media.placeholder) continue;
+      cells.push({
+        kind: 'image',
+        src: media.src,
+        srcset: media.srcset ?? '',
+        width: media.width,
+        height: media.height,
+        alt: copy === 1 ? '' : slot.alt,
+        copy,
+      });
     }
-    const media = await resolveMedia({ asset: slot.asset, alt: slot.alt, ratio: '9/16' }, slot.asset);
-    if (media.placeholder) continue;
-    cells.push({
-      kind: 'image',
-      src: media.src,
-      srcset: media.srcset ?? '',
-      width: media.width,
-      height: media.height,
-      alt: copy === 1 ? '' : slot.alt,
-      copy,
-    });
   }
 }
 
@@ -51,7 +57,7 @@ const tileClass = 'aspect-[9/16] h-72 w-auto shrink-0 rounded-[1.25rem] bg-bone 
 
 <section aria-label="Galería del producto" class="overflow-hidden bg-white py-10 md:py-12">
   <div
-    class="flex w-max animate-[marquee_48s_linear_infinite] motion-reduce:animate-none hover:[animation-play-state:paused]"
+    class="flex w-max animate-[marquee_180s_linear_infinite] motion-reduce:animate-none"
   >
     {
       cells.map((cell) => (

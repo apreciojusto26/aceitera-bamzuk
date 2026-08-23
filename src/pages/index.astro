@@ -40,14 +40,6 @@ const commerce = commerceEnabled ? await getProductCommerce() : null;
     <ReviewsReel />
     <Guarantee />
     <Faq />
-
-    {
-      !commerce && (
-        <p class="bg-white px-5 pb-10 pt-2 text-center text-xs text-steel">
-          Este producto se muestra únicamente con fines informativos.
-        </p>
-      )
-    }
   </main>
   <SiteFooter />
   {commerce && <StickyBar />}
