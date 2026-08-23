@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Stars } from '@/components/islands/parts/Stars';
 import type { Testimonial } from '@/types/content';
 
@@ -6,86 +6,93 @@ interface ReviewCarouselProps {
   reviews: Testimonial[];
 }
 
-const GAP_PX = 16; // matches gap-4 in the track className below
+const GAP_PX = 20;
+const SPEED_PX_PER_SECOND = 28;
 
 export function ReviewCarousel({ reviews }: ReviewCarouselProps) {
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const rafRef = useRef<number | null>(null);
-
-  const scrollToIndex = (index: number) => {
-    const track = trackRef.current;
-    const card = track?.children[index] as HTMLElement | undefined;
-    if (!track || !card) return;
-    track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: 'smooth' });
-  };
-
-  const goPrev = () => scrollToIndex((activeIndex - 1 + reviews.length) % reviews.length);
-  const goNext = () => scrollToIndex((activeIndex + 1) % reviews.length);
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track) return;
+    if (!track || reviews.length === 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const handleScroll = () => {
-      if (rafRef.current !== null) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        const firstCard = track.children[0] as HTMLElement | undefined;
-        if (!firstCard) return;
-        const cardWidth = firstCard.offsetWidth + GAP_PX;
-        const index = Math.round(track.scrollLeft / cardWidth);
-        setActiveIndex(Math.max(0, Math.min(reviews.length - 1, index)));
-      });
+    let paused = false;
+    let loopWidth = 0;
+    let raf = 0;
+    let last = performance.now();
+
+    const measure = () => {
+      const copyCount = track.children.length / 2;
+      let width = 0;
+      for (let i = 0; i < copyCount; i += 1) {
+        const card = track.children[i] as HTMLElement | undefined;
+        if (!card) return;
+        width += card.offsetWidth + GAP_PX;
+      }
+      loopWidth = width;
     };
 
-    track.addEventListener('scroll', handleScroll, { passive: true });
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick);
+      if (paused || document.hidden) {
+        last = now;
+        return;
+      }
+      if (loopWidth === 0) measure();
+      if (loopWidth === 0) return;
+
+      const delta = Math.min(now - last, 50);
+      last = now;
+      track.scrollLeft += (delta / 1000) * SPEED_PX_PER_SECOND;
+      if (track.scrollLeft >= loopWidth) track.scrollLeft -= loopWidth;
+    };
+
+    const pause = () => {
+      paused = true;
+    };
+    const resume = () => {
+      paused = false;
+      last = performance.now();
+    };
+    const invalidate = () => {
+      loopWidth = 0;
+    };
+
+    track.addEventListener('mouseenter', pause);
+    track.addEventListener('mouseleave', resume);
+    track.addEventListener('focusin', pause);
+    track.addEventListener('focusout', resume);
+    track.addEventListener('touchstart', pause, { passive: true });
+    track.addEventListener('touchend', resume);
+    window.addEventListener('resize', invalidate);
+    raf = requestAnimationFrame(tick);
+
     return () => {
-      track.removeEventListener('scroll', handleScroll);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      cancelAnimationFrame(raf);
+      track.removeEventListener('mouseenter', pause);
+      track.removeEventListener('mouseleave', resume);
+      track.removeEventListener('focusin', pause);
+      track.removeEventListener('focusout', resume);
+      track.removeEventListener('touchstart', pause);
+      track.removeEventListener('touchend', resume);
+      window.removeEventListener('resize', invalidate);
     };
   }, [reviews.length]);
 
+  const loop = [...reviews, ...reviews];
+
   return (
     <div role="region" aria-roledescription="carousel" aria-label="Reseñas de clientes">
-      <div className="hidden items-center justify-end gap-2 pb-3 md:flex">
-        <button
-          type="button"
-          onClick={goPrev}
-          aria-label="Reseña anterior"
-          className="grid size-8 place-items-center rounded-full bg-white text-grape shadow-card transition hover:bg-grape/5"
-        >
-          <svg viewBox="0 0 20 20" className="size-4 rotate-90" aria-hidden="true">
-            <path
-              fill="currentColor"
-              d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z"
-            />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={goNext}
-          aria-label="Reseña siguiente"
-          className="grid size-8 place-items-center rounded-full bg-white text-grape shadow-card transition hover:bg-grape/5"
-        >
-          <svg viewBox="0 0 20 20" className="size-4 -rotate-90" aria-hidden="true">
-            <path
-              fill="currentColor"
-              d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z"
-            />
-          </svg>
-        </button>
-      </div>
-
       <div
         ref={trackRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden motion-reduce:scroll-auto"
+        className="scrollbar-none flex gap-5 overflow-x-auto px-[max(1.25rem,calc((100vw_-_28rem)/2_+_1.25rem))] pb-8 md:px-[max(1.25rem,calc((100vw_-_42rem)/2_+_1.25rem))] lg:px-[max(1.25rem,calc((100vw_-_72rem)/2_+_1.25rem))] xl:px-[max(1.25rem,calc((100vw_-_80rem)/2_+_1.25rem))]"
       >
-        {reviews.map((review, i) => (
+        {loop.map((review, i) => (
           <article
-            key={review.id}
-            aria-label={`${i + 1} de ${reviews.length}`}
-            className="flex w-[86%] shrink-0 snap-start flex-col rounded-card bg-white p-5 text-left shadow-lift sm:w-[48%] xl:w-[31%]"
+            key={`${review.id}-${i}`}
+            aria-hidden={i >= reviews.length || undefined}
+            className="flex w-[86%] shrink-0 flex-col rounded-card border border-graphite/5 bg-white p-5 text-left shadow-[0_2px_8px_rgba(30,33,36,0.04),0_12px_28px_rgba(30,33,36,0.06)] transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_10px_rgba(30,33,36,0.05),0_16px_34px_rgba(30,33,36,0.09)] sm:w-[48%] xl:w-[31%]"
           >
             <Stars rating={review.rating} className="mb-3" />
             <p className="flex-1 text-sm leading-relaxed text-graphite">{review.body}</p>
@@ -110,20 +117,6 @@ export function ReviewCarousel({ reviews }: ReviewCarouselProps) {
               )}
             </div>
           </article>
-        ))}
-      </div>
-
-      <div className="mt-3 flex justify-center gap-1.5" role="tablist" aria-label="Seleccionar reseña">
-        {reviews.map((review, i) => (
-          <button
-            key={review.id}
-            type="button"
-            role="tab"
-            aria-selected={i === activeIndex}
-            aria-label={`Ir a la reseña ${i + 1}`}
-            onClick={() => scrollToIndex(i)}
-            className={`size-1.5 rounded-full transition-colors ${i === activeIndex ? 'bg-grape' : 'bg-grape/25'}`}
-          />
         ))}
       </div>
     </div>

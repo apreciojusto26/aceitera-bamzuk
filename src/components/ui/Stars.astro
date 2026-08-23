@@ -20,7 +20,7 @@ const stars = Array.from({ length: max }, (_, i) => {
   {
     stars.map((fill) => (
       <svg viewBox={STAR_VIEWBOX} class:list={['size-4 shrink-0', starClass]} aria-hidden="true">
-        <path d={STAR_PATH} fill="currentColor" opacity={fill === 0 ? 0.25 : fill} class="text-gold" />
+        <path d={STAR_PATH} fill="currentColor" opacity={fill === 0 ? 0.25 : fill} class="text-[#FFB202]" />
       </svg>
     ))
   }

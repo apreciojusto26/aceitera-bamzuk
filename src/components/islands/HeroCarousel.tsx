@@ -27,19 +27,19 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
 
   return (
     <div>
-      <div className="relative">
+      <div className="relative mx-auto w-full max-w-[32rem] lg:max-w-[35rem]">
         <button
           ref={mainTriggerRef}
           type="button"
           onClick={() => $lightboxIndex.set(activeIndex)}
           aria-label={`Ampliar imagen: ${active.alt}`}
-          className="block w-full overflow-hidden rounded-none motion-safe:transition-transform md:rounded-card"
+          className="block w-full overflow-hidden rounded-card motion-safe:transition-transform"
         >
           {active.placeholder ? (
             <PlaceholderShot
               ratio="1/1"
               alt={active.alt}
-              rounded="rounded-none md:rounded-card"
+              rounded="rounded-card"
               className="w-full"
             />
           ) : (
@@ -49,7 +49,7 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
               width={active.width}
               height={active.height}
               alt={active.alt}
-              className="aspect-square w-full rounded-none object-cover md:rounded-card"
+              className="aspect-square w-full rounded-card bg-white object-cover"
             />
           )}
         </button>
@@ -58,7 +58,7 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
           type="button"
           onClick={goPrev}
           aria-label="Imagen anterior"
-          className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/40 text-graphite shadow-card ring-1 ring-graphite/15 backdrop-blur-sm motion-safe:transition hover:bg-white/60 active:scale-95"
+          className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-graphite shadow-card ring-1 ring-graphite/15 backdrop-blur-sm motion-safe:transition hover:bg-white active:scale-95"
         >
           <svg viewBox="0 0 20 20" className="size-5 rotate-90" aria-hidden="true">
             <path fill="currentColor" d={chevronPath} />
@@ -69,14 +69,16 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
           type="button"
           onClick={goNext}
           aria-label="Imagen siguiente"
-          className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/40 text-graphite shadow-card ring-1 ring-graphite/15 backdrop-blur-sm motion-safe:transition hover:bg-white/60 active:scale-95"
+          className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-graphite shadow-card ring-1 ring-graphite/15 backdrop-blur-sm motion-safe:transition hover:bg-white active:scale-95"
         >
           <svg viewBox="0 0 20 20" className="size-5 -rotate-90" aria-hidden="true">
             <path fill="currentColor" d={chevronPath} />
           </svg>
         </button>
+      </div>
 
-        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2" role="tablist" aria-label="Seleccionar imagen">
+      {count > 1 && (
+        <div className="mt-3 flex justify-center gap-2" role="tablist" aria-label="Seleccionar imagen">
           {images.map((img, i) => (
             <button
               key={img.id}
@@ -85,11 +87,21 @@ export function HeroCarousel({ images }: HeroCarouselProps) {
               aria-selected={i === activeIndex}
               aria-label={`Ir a la imagen ${i + 1}`}
               onClick={() => setActiveIndex(i)}
-              className={`size-2 rounded-full transition-colors ${i === activeIndex ? 'bg-white' : 'bg-white/40'}`}
-            />
+              className={`size-14 overflow-hidden rounded-tile border-2 transition-colors sm:size-16 ${
+                i === activeIndex ? 'border-grape' : 'border-transparent opacity-60 hover:opacity-100'
+              }`}
+            >
+              {img.placeholder ? (
+                <span className="grid h-full w-full place-items-center bg-bone text-[0.6rem] font-semibold text-steel">
+                  {i + 1}
+                </span>
+              ) : (
+                <img src={img.src} alt="" width={96} height={96} loading="lazy" className="h-full w-full object-cover" />
+              )}
+            </button>
           ))}
         </div>
-      </div>
+      )}
 
       {isLightboxOpen && lightboxIndex !== null && (
         <Lightbox

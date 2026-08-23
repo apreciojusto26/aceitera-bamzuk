@@ -1,0 +1,83 @@
+---
+import { resolveMedia } from '@/lib/resolve-media';
+
+type Slot =
+  | { kind: 'image'; asset: string; alt: string }
+  | { kind: 'video'; src: string; alt: string };
+
+const slots: Slot[] = [
+  { kind: 'image', asset: 'strip-01', alt: 'Pulverizador de aceite 2 en 1 en uso' },
+  { kind: 'video', src: '/videos/galeria-01.mp4', alt: 'Vídeo del pulverizador de aceite en funcionamiento' },
+  { kind: 'image', asset: 'strip-02', alt: 'Detalle del pulverizador de aceite' },
+  { kind: 'image', asset: 'strip-03', alt: 'Pulverizador de aceite sobre superficie de cocina' },
+];
+
+type Cell =
+  | { kind: 'video'; src: string; alt: string; copy: number }
+  | {
+      kind: 'image';
+      src: string;
+      srcset: string;
+      width: number;
+      height: number;
+      alt: string;
+      copy: number;
+    };
+
+const cells: Cell[] = [];
+
+// Cada mitad de la pista debe medir más que cualquier viewport (incl. ultra-wide)
+// para que el bucle -50% sea perfecto y nunca entre espacio en blanco.
+const REPEATS_PER_HALF = 4;
+
+for (const copy of [0, 1]) {
+  for (let repeat = 0; repeat < REPEATS_PER_HALF; repeat += 1) {
+    for (const slot of slots) {
+      if (slot.kind === 'video') {
+        cells.push({ kind: 'video', src: slot.src, alt: slot.alt, copy });
+        continue;
+      }
+      const media = await resolveMedia({ asset: slot.asset, alt: slot.alt, ratio: '9/16' }, slot.asset);
+      if (media.placeholder) continue;
+      cells.push({
+        kind: 'image',
+        src: media.src,
+        srcset: media.srcset ?? '',
+        width: media.width,
+        height: media.height,
+        alt: copy === 1 ? '' : slot.alt,
+        copy,
+      });
+    }
+  }
+}
+
+const tileClass = 'aspect-[9/16] h-72 w-auto shrink-0 rounded-[1.25rem] bg-bone object-cover sm:h-80 lg:h-96 xl:h-[27rem]';
+---
+
+<section aria-label="Galería del producto" class="overflow-hidden bg-white py-10 md:py-12">
+  <div
+    class="flex w-max animate-[marquee_180s_linear_infinite] motion-reduce:animate-none"
+  >
+    {
+      cells.map((cell) => (
+        <div class="px-2" aria-hidden={cell.copy === 1 || undefined}>
+          {cell.kind === 'video' ? (
+            <video src={cell.src} class={tileClass} muted loop playsinline autoplay preload="metadata" />
+          ) : (
+            <img
+              src={cell.src}
+              srcset={cell.srcset}
+              sizes="(min-width: 1024px) 240px, 180px"
+              width={cell.width}
+              height={cell.height}
+              alt={cell.alt}
+              loading="lazy"
+              class={tileClass}
+            />
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>

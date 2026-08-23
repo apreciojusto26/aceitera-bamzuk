@@ -41,12 +41,21 @@
   --shadow-ring-white: 0 0 0 4px #FFFFFF;
 
   --breakpoint-xs: 22.5rem;
-  --animate-marquee: marquee 20s linear infinite;
+  --animate-marquee: marquee 120s linear infinite;
   --animate-shine: shine 3.5s linear infinite;
 }
 
 @keyframes marquee { from { transform: translate3d(0,0,0);} to { transform: translate3d(-50%,0,0);} }
 @keyframes shine { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+@keyframes caret-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
 
 @layer base {
   html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }

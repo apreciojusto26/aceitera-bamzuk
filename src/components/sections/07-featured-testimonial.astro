@@ -1,13 +1,19 @@
 ---
 import { testimonials } from '@/data/testimonials';
 import Stars from '@/components/ui/Stars.astro';
+import WaveDivider from '@/components/ui/WaveDivider.astro';
 
 const featured = testimonials.find((t) => t.variant === 'quote');
 ---
 
 {
   featured && (
-    <section class="relative overflow-hidden bg-grape-tint px-5 py-12 text-center md:py-16">
+    <Fragment>
+      <div class="bg-white">
+        <WaveDivider fill="grape-tint" />
+      </div>
+
+      <section class="relative overflow-hidden bg-grape-tint px-5 py-12 text-center md:py-16">
       <div class="pointer-events-none absolute -left-20 -top-24 size-64 rounded-full bg-grape-soft/20 blur-3xl" aria-hidden="true" />
       <div class="pointer-events-none absolute -bottom-28 -right-16 size-72 rounded-full bg-gold/10 blur-3xl" aria-hidden="true" />
 
@@ -15,8 +21,19 @@ const featured = testimonials.find((t) => t.variant === 'quote');
         <div class="relative z-10">
           <Stars rating={featured.rating} class="justify-center" starClass="size-5" />
 
-          <p class="mx-auto mt-4 max-w-[39rem] text-[1.0625rem] leading-[1.5] text-graphite md:text-xl md:leading-relaxed">
-            {featured.body}
+          <p
+            class="mx-auto mt-4 max-w-[39rem] text-[1.0625rem] leading-[1.5] text-graphite md:text-xl md:leading-relaxed"
+            data-typewriter
+          >
+            <span class="sr-only">{featured.body}</span>
+            <span aria-hidden="true" data-typewriter-text>{featured.body}</span>
+            <span
+              aria-hidden="true"
+              data-typewriter-caret
+              class="ml-0.5 hidden font-bold text-grape transition-opacity duration-700 animate-[caret-blink_0.9s_steps(1)_infinite]"
+            >
+              ▍</span
+            >
           </p>
 
           <div class="mt-5 flex items-center justify-center">
@@ -36,7 +53,48 @@ const featured = testimonials.find((t) => t.variant === 'quote');
             </div>
           </div>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </Fragment>
   )
 }
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-typewriter]');
+  const target = box?.querySelector<HTMLElement>('[data-typewriter-text]');
+  const caret = box?.querySelector<HTMLElement>('[data-typewriter-caret]');
+
+  if (box && target && caret && 'IntersectionObserver' in window) {
+    const full = target.textContent ?? '';
+    let started = false;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (started || !entries.some((entry) => entry.isIntersecting)) return;
+        started = true;
+        observer.disconnect();
+
+        if (!full || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        box.style.minHeight = `${box.offsetHeight}px`;
+        caret.classList.remove('hidden');
+        target.textContent = '';
+
+        let index = 0;
+        const tick = () => {
+          index += 1;
+          target.textContent = full.slice(0, index);
+          if (index < full.length) {
+            setTimeout(tick, 14 + Math.random() * 22);
+          } else {
+            setTimeout(() => caret.classList.add('opacity-0'), 2400);
+          }
+        };
+        setTimeout(tick, 400);
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(box);
+  }
+</script>

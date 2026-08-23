@@ -1,37 +1,60 @@
 ---
 import Container from '@/components/ui/Container.astro';
+import Stars from '@/components/ui/Stars.astro';
 import { HeroCarousel } from '@/components/islands/HeroCarousel';
 import { product } from '@/data/product';
 import { resolveMediaList } from '@/lib/resolve-media';
 
 const resolvedImages = await resolveMediaList(product.gallery, 'gallery');
+const ratingLabel = product.ratingAverage.toFixed(1).replace('.', ',');
+const ratingCountLabel = new Intl.NumberFormat('es-ES').format(product.ratingCount);
 ---
 
-<section class="min-w-0 bg-white pb-6 pt-0">
+<section class="bg-white pb-10 pt-4 md:pb-14 md:pt-6">
   <Container>
-    <div class="-mx-5 md:mx-auto md:max-w-[42rem] xl:max-w-[40rem]">
-      <HeroCarousel client:visible images={resolvedImages} />
+    <div class="grid items-center gap-8 lg:grid-cols-[53fr_47fr] lg:gap-12">
+      <div class="order-first min-w-0">
+        <HeroCarousel client:visible images={resolvedImages} />
+      </div>
 
-      <div class="mt-5 px-5 text-center md:px-0">
-        <h1 class="text-4xl tracking-tight md:text-5xl">
-          <span class="animate-shine bg-[linear-gradient(110deg,var(--color-grape-deep)_25%,var(--color-grape-soft)_50%,var(--color-grape-deep)_75%)] bg-[length:200%_auto] bg-clip-text text-transparent">
-            Pulveriza o vierte,<br />tú eliges.
-          </span>
-        </h1>
+      <div class="min-w-0 text-center lg:text-left">
+        <div
+          class="rounded-[2rem] bg-white p-6 shadow-[0_0_0_1px_rgba(30,33,36,0.06),0_0_18px_rgba(30,33,36,0.05),0_4px_10px_rgba(30,33,36,0.05),0_16px_40px_rgba(30,33,36,0.10)] md:p-8 lg:p-10"
+        >
+          <p class="text-eyebrow font-bold uppercase text-grape">Utensilio de cocina 2 en 1</p>
 
-        <div class="mt-3 flex flex-wrap justify-center gap-2">
-          {
-            product.heroPills.map((label, index) => (
-              <span
-                class:list={[
-                  'rounded-pill px-3 py-2 text-xs font-semibold shadow-card',
-                  index === 0 ? 'bg-grape-tint text-grape-deep' : 'bg-gold-tint text-graphite',
-                ]}
-              >
-                {label}
-              </span>
-            ))
-          }
+          <div class="mt-3 flex items-center justify-center gap-2 lg:justify-start">
+            <Stars rating={product.ratingAverage} />
+            <span class="text-sm font-semibold text-graphite">{ratingLabel}/5 · {ratingCountLabel} valoraciones</span>
+          </div>
+
+          <h1 class="mt-3 text-hero tracking-tight md:text-[2.75rem]">
+            Pulveriza o vierte.<br />
+            <span class="text-grape">Tú eliges.</span>
+          </h1>
+
+          <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-graphite/80 lg:mx-0">
+            Controla mejor la cantidad de aceite en cada receta con un recipiente reutilizable que te permite pulverizar o servir directamente.
+          </p>
+
+          <div class="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start">
+            {
+              product.heroPills.map((label) => (
+                <span class="rounded-pill bg-bone-dim px-3 py-1.5 text-xs font-semibold text-graphite/60">
+                  {label}
+                </span>
+              ))
+            }
+          </div>
+
+          <div class="mt-7 flex justify-center lg:justify-start">
+            <a
+              href="#beneficios"
+              class="inline-flex w-full items-center justify-center rounded-pill bg-grape px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-grape-dark sm:w-auto"
+            >
+              Ver cómo funciona
+            </a>
+          </div>
         </div>
       </div>
     </div>

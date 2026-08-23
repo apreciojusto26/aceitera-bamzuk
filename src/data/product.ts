@@ -37,7 +37,11 @@ export const product = {
 
   badges: ['Función 2 en 1', 'Pulverización y vertido', 'Para cocina y barbacoa'],
 
-  trustTicker: ['Pulveriza el aceite', 'Vierte directamente', 'Uso en cocina', 'Uso en barbacoa'],
+  trustTicker: [
+    '🚚 ENVÍOS A ESPAÑA',
+    '🛍️ VENDIDO POR BAMZUK',
+    '🔒 COMPRA SEGURA',
+  ],
 
   offer: {
     durationMinutes: 0,
@@ -72,7 +76,7 @@ export const product = {
     },
   ],
 
-  heroPills: ['Pulveriza', 'Vierte', 'Recipiente reutilizable'],
+  heroPills: ['Pulveriza', 'Vierte', '500 ml'],
 
   specs: [
     { label: 'Tipo', value: 'Pulverizador y vertedor 2 en 1' },
@@ -95,13 +99,31 @@ export const product = {
       default: true,
       popular: false,
     },
+    {
+      id: 'x2',
+      units: 2,
+      freeUnits: 0,
+      label: '2 unidades',
+      sublabel: 'Disponibilidad por confirmar',
+      default: false,
+      popular: false,
+    },
+    {
+      id: 'x3',
+      units: 3,
+      freeUnits: 0,
+      label: '3 unidades',
+      sublabel: 'Disponibilidad por confirmar',
+      default: false,
+      popular: false,
+    },
   ],
 
   gallery: [
     {
       id: 'g1',
-      asset: 'gallery-01',
-      alt: 'Pulverizador de aceite 2 en 1 con tapa negra, mostrado en modo vertido y pulverización',
+      asset: 'cover',
+      alt: 'Pulverizador de aceite 2 en 1, imagen de portada del producto',
       ratio: '1/1',
       label: 'Dos funciones',
     },
