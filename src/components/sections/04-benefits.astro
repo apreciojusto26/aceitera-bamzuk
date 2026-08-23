@@ -1,0 +1,70 @@
+---
+import Container from '@/components/ui/Container.astro';
+
+const benefits = [
+  {
+    title: 'Pulveriza',
+    text: 'Distribuye el aceite de forma más uniforme sobre alimentos, sartenes o bandejas.',
+    icon: 'spray' as const,
+  },
+  {
+    title: 'Vierte',
+    text: 'Sirve directamente cuando necesitas una cantidad mayor.',
+    icon: 'droplets' as const,
+  },
+  {
+    title: 'Rellena y reutiliza',
+    text: 'Un recipiente diseñado para usarse una y otra vez.',
+    icon: 'reuse' as const,
+  },
+];
+
+const BENEFIT_ICONS: Record<(typeof benefits)[number]['icon'], string> = {
+  spray:
+    '<path d="M3 3h.01"/><path d="M7 5h.01"/><path d="M11 7h.01"/><path d="M3 7h.01"/><path d="M7 9h.01"/><path d="M3 11h.01"/><rect width="4" height="4" x="15" y="5" rx="1"/><path d="m19 9 2 2v10c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1V11l2-2"/><path d="m13 14 8-2"/><path d="m13 19 8-2"/>',
+  droplets:
+    '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
+  reuse:
+    '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+};
+---
+
+<section id="beneficios" class="scroll-mt-24 bg-white py-12 md:py-20">
+  <Container>
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-eyebrow font-bold uppercase text-grape">Ventajas</p>
+      <h2 class="mt-2 text-display md:text-4xl">Dos formas de servir.<br class="sm:hidden" /> Un solo recipiente.</h2>
+    </div>
+
+    <div class="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-3 md:mt-14">
+      {
+        benefits.map((benefit, index) => (
+          <div
+            class:list={[
+              'text-center sm:text-left',
+              index > 0 && 'border-t border-graphite/8 pt-8 sm:border-t-0 sm:pt-0',
+              index > 0 && 'sm:border-l sm:border-graphite/8 sm:pl-10',
+            ]}
+          >
+            <span class="inline-grid size-11 place-items-center rounded-full bg-grape-tint text-grape-deep">
+              <svg
+                viewBox="0 0 24 24"
+                class="size-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <Fragment set:html={BENEFIT_ICONS[benefit.icon]} />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-lg font-bold text-graphite">{benefit.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-steel">{benefit.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+</section>

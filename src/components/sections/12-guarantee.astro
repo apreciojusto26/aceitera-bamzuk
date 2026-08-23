@@ -5,26 +5,70 @@ import { product } from '@/data/product';
 
 const shield = ICONS.shield;
 const { guarantee } = product;
+
+const introText =
+  'Las condiciones de devolución, cobertura y plazos estarán siempre visibles antes de realizar una compra. No mostramos garantías o condiciones que todavía no hayan sido verificadas.';
+
+const blocks = [
+  {
+    icon: 'document',
+    title: 'Antes de pagar',
+    text: 'Las condiciones aplicables estarán visibles antes de finalizar la compra.',
+  },
+  {
+    icon: 'clock',
+    title: 'Plazos verificados',
+    text: 'No mostramos periodos de devolución que aún no estén confirmados.',
+  },
+  {
+    icon: 'shield',
+    title: 'Cobertura transparente',
+    text: 'La cobertura dependerá siempre de la política real del comercio.',
+  },
+];
+
+const STROKE_ICONS: Record<(typeof blocks)[number]['icon'], string> = {
+  document:
+    '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  shield:
+    '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+};
 ---
 
-<section id="garantia" class="bg-gold-tint py-12 md:py-16" aria-labelledby="guarantee-title">
+<section id="garantia" class="bg-gold-tint py-10 md:py-14" aria-labelledby="guarantee-title">
   <Container class="text-center">
-    <div class="mx-auto grid size-24 place-items-center rounded-full border border-gold/30 bg-white shadow-card">
-      <svg viewBox={shield.viewBox} class="size-14 text-gold" aria-hidden="true">
+    <div
+      class="mx-auto grid size-24 place-items-center rounded-full border border-graphite/5 bg-white shadow-[0_2px_8px_rgba(30,33,36,0.04),0_10px_24px_rgba(30,33,36,0.05)]"
+    >
+      <svg viewBox={shield.viewBox} class="size-12 text-gold" aria-hidden="true">
         <path fill="currentColor" d={shield.path} />
       </svg>
     </div>
-    <h2 id="guarantee-title" class="mt-4 text-display md:text-4xl">{guarantee.title}</h2>
-    <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-steel">{guarantee.text}</p>
 
-    <div class="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
+    <h2 id="guarantee-title" class="mt-7 text-[1.625rem] leading-tight tracking-tight md:text-3xl">
+      {guarantee.title}
+    </h2>
+    <p class="mx-auto mt-4 max-w-[47rem] text-sm leading-relaxed text-steel md:text-[0.9375rem]">{introText}</p>
+
+    <div class="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
       {
-        guarantee.points.map((point) => (
-          <div class="flex flex-col items-center gap-2 rounded-tile border border-gold/20 bg-white/70 p-4 text-xs leading-relaxed text-graphite">
-            <svg viewBox={shield.viewBox} class="size-6 text-gold" aria-hidden="true">
-              <path fill="currentColor" d={shield.path} />
+        blocks.map((block) => (
+          <div class="flex flex-col items-center gap-2.5 rounded-[1.25rem] border border-gold/20 bg-white px-6 py-7 shadow-[0_2px_8px_rgba(30,33,36,0.04)]">
+            <svg
+              viewBox="0 0 24 24"
+              class="size-7 text-gold"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <Fragment set:html={STROKE_ICONS[block.icon]} />
             </svg>
-            <span>{point}</span>
+            <h3 class="text-sm font-bold text-graphite">{block.title}</h3>
+            <p class="text-xs leading-relaxed text-steel">{block.text}</p>
           </div>
         ))
       }

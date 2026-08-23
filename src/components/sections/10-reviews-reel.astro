@@ -7,12 +7,12 @@ import { testimonials } from '@/data/testimonials';
 const reelReviews = testimonials.filter((t) => t.variant === 'reel');
 ---
 
-<div class="bg-white">
-  <WaveDivider fill="grape-tint" />
-</div>
+<Fragment>
+  <div class="bg-white">
+    <WaveDivider fill="grape-tint" flip />
+  </div>
 
-<div class="bg-grape-tint">
-  <section class="mx-3 rounded-card bg-grape-tint py-10 md:mx-6 md:py-12 xl:mx-auto xl:max-w-[80rem]">
+  <section id="opiniones" class="scroll-mt-24 bg-white py-10 md:py-14">
     <Container>
       <div>
         <p class="text-eyebrow font-bold uppercase text-grape">Opiniones del producto</p>
@@ -20,10 +20,11 @@ const reelReviews = testimonials.filter((t) => t.variant === 'reel');
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-steel">
           Textos, puntuaciones, autores y fechas proceden del scrape asociado a este producto. No afirmamos verificación ni ubicación cuando la fuente no las aporta.
         </p>
-        <div class="mt-6">
-        <ReviewCarousel client:visible reviews={reelReviews} />
-        </div>
       </div>
     </Container>
+
+    <div class="relative left-1/2 mt-6 w-screen -translate-x-1/2">
+      <ReviewCarousel client:visible reviews={reelReviews} />
+    </div>
   </section>
-</div>
+</Fragment>

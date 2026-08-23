@@ -4,12 +4,13 @@ import UtilityBar from '@/components/sections/01-utility-bar.astro';
 import SiteHeader from '@/components/sections/02-site-header.astro';
 import Hero from '@/components/sections/03-hero.astro';
 import BuyBox from '@/components/sections/05-buy-box.astro';
-import HowItWorks from '@/components/sections/06-how-it-works.astro';
+import Benefits from '@/components/sections/04-benefits.astro';
+import Gallery from '@/components/sections/06-gallery.astro';
+import Specifications from '@/components/sections/16-specifications.astro';
 import FeaturedTestimonial from '@/components/sections/07-featured-testimonial.astro';
-import Faq from '@/components/sections/08-faq.astro';
 import ReviewsReel from '@/components/sections/10-reviews-reel.astro';
 import Guarantee from '@/components/sections/12-guarantee.astro';
-import ResultsGallery from '@/components/sections/13-results-gallery.astro';
+import Faq from '@/components/sections/08-faq.astro';
 import SiteFooter from '@/components/sections/14-site-footer.astro';
 import StickyBar from '@/components/sections/15-sticky-bar.astro';
 import { CartDrawer } from '@/components/islands/CartDrawer';
@@ -30,18 +31,23 @@ const commerce = commerceEnabled ? await getProductCommerce() : null;
   <UtilityBar />
   <SiteHeader />
   <main>
-    <div class="bg-white">
-      <div class="xl:mx-auto xl:grid xl:w-full xl:max-w-[80rem] xl:grid-cols-[minmax(0,1.1fr)_minmax(25rem,0.9fr)] xl:items-start xl:gap-8 xl:px-8 xl:py-8">
-        <Hero />
-        <BuyBox />
-      </div>
-    </div>
-    <HowItWorks />
-    <ResultsGallery />
+    <Hero />
+    <BuyBox />
+    <Benefits />
+    <Gallery />
+    <Specifications />
     <FeaturedTestimonial />
     <ReviewsReel />
     <Guarantee />
     <Faq />
+
+    {
+      !commerce && (
+        <p class="bg-white px-5 pb-10 pt-2 text-center text-xs text-steel">
+          Este producto se muestra únicamente con fines informativos.
+        </p>
+      )
+    }
   </main>
   <SiteFooter />
   {commerce && <StickyBar />}

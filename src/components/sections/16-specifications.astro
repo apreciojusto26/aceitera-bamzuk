@@ -1,0 +1,72 @@
+---
+import Container from '@/components/ui/Container.astro';
+import { product } from '@/data/product';
+
+function specValue(sourceLabel: string): string {
+  return product.specs.find((spec) => spec.label === sourceLabel)?.value ?? '';
+}
+
+const featured = [
+  { label: 'Capacidad', value: specValue('Capacidad indicada') },
+  { label: 'Material', value: specValue('Material indicado') },
+  { label: 'Altura', value: specValue('Altura indicada') },
+  { label: 'Uso', value: specValue('Uso documentado') },
+].filter((item) => item.value.length > 0);
+
+const details = [
+  { label: 'Tipo', value: specValue('Tipo') },
+  { label: 'Contenido', value: specValue('Contenido') },
+  { label: 'Colores disponibles', value: specValue('Colores indicados') },
+  { label: 'Presentaciones', value: specValue('Unidades mencionadas por la fuente') },
+].filter((item) => item.value.length > 0);
+
+const dividerClasses = [
+  '',
+  'border-l border-grape-deep/10',
+  'border-t border-grape-deep/10 lg:border-t-0 lg:border-l',
+  'border-t border-l border-grape-deep/10 lg:border-t-0',
+];
+---
+
+<section id="especificaciones" class="scroll-mt-24 bg-white py-12 md:py-16">
+  <Container>
+    <div class="mx-auto max-w-2xl text-center">
+      <p class="text-eyebrow font-bold uppercase text-grape">Especificaciones</p>
+      <h2 class="mt-2 text-[1.625rem] leading-tight tracking-tight md:text-3xl">Todo lo que necesitas saber</h2>
+    </div>
+
+    <dl class="mt-8 grid grid-cols-2 overflow-hidden rounded-3xl border border-grape-deep/10 bg-grape-tint lg:mt-10 lg:grid-cols-4">
+      {
+        featured.map((spec, index) => (
+          <div
+            class:list={[
+              'flex flex-col-reverse items-start justify-center gap-1.5 px-5 py-6 sm:px-7 md:py-7 lg:px-6 xl:px-8',
+              dividerClasses[index],
+            ]}
+          >
+            <dt class="text-xs font-bold uppercase tracking-[0.14em] text-grape-dark/70">{spec.label}</dt>
+            <dd class="font-display text-lg font-bold leading-snug tracking-tight text-graphite md:text-xl">
+              {spec.value}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    {
+      details.length > 0 && (
+        <div class="mt-10 md:mt-12">
+          <p class="text-center text-xs font-bold uppercase tracking-[0.18em] text-steel">Detalles</p>
+          <dl class="mx-auto mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-[1.2fr_0.8fr] lg:w-[65%]">
+            {details.map((detail) => (
+              <div>
+                <dt class="text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-steel">{detail.label}</dt>
+                <dd class="mt-1 text-sm font-semibold text-graphite">{detail.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+  </Container>
+</section>
