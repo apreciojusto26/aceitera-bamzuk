@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { product } from '@/data/product';
 import { testimonials } from '@/data/testimonials';
@@ -13,8 +15,13 @@ describe('catalog-only safety gate', () => {
     expect(JSON.stringify({ product, testimonials })).not.toMatch(/zomasou/i);
   });
 
-  it('keeps commerce disabled while exposing only source-backed social proof', () => {
-    expect(product.commerce.shopifyHandle).toBe('');
+  it('sources the Shopify handle from the deployment env, never from a literal', () => {
+    const source = readFileSync(resolve(process.cwd(), 'src/data/product.ts'), 'utf8');
+    expect(source).toContain("import.meta.env.PUBLIC_SHOPIFY_PRODUCT_HANDLE ?? ''");
+    expect(source).not.toMatch(/shopifyHandle:\s*'[^']/);
+  });
+
+  it('exposes only source-backed social proof and no unverified bundle offer', () => {
     expect(product.commerce.bundleOfferActive).toBe(false);
     expect(product.ratingAverage).toBe(normalizedProduct.socialProof.rating);
     expect(product.ratingCount).toBe(normalizedProduct.socialProof.reviewCount);
@@ -53,7 +60,16 @@ describe('catalog-only safety gate', () => {
     expect(product.guarantee.text).toMatch(/condiciones|comercio/i);
   });
 
-  it('fails before a Shopify request when no verified handle exists', async () => {
+  it('fails before a Shopify request when the env supplies no verified handle', async () => {
+    if (product.commerce.shopifyHandle) {
+      // A real handle is present in this environment (a local `vercel env pull`,
+      // or CI running with production vars). The fail-closed branch is then
+      // unreachable and asserting it would require a live Storefront call, so
+      // verify the wiring instead: the handle came from the env, not a literal.
+      expect(product.commerce.shopifyHandle).toBe(import.meta.env.PUBLIC_SHOPIFY_PRODUCT_HANDLE);
+      return;
+    }
+
     await expect(getProductCommerce()).rejects.toThrow(
       'Shopify catalog disabled: no verified product handle is configured',
     );

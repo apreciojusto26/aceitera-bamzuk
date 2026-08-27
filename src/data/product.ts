@@ -1,6 +1,18 @@
 import type { Product } from '@/types/content';
 
 /**
+ * The verified Shopify product handle is supplied by the deployment
+ * environment. PUBLIC_-prefixed so Vite inlines it for the islands that read
+ * `product.commerce` in the browser, matching src/lib/shopify/client.ts.
+ *
+ * Still fail-closed: unset/empty keeps the whole site in catalog mode via the
+ * `shopifyHandle.trim().length` checks in src/middleware.ts, index.astro,
+ * 05-buy-box.astro, 02-site-header.astro, 14-site-footer.astro and
+ * src/pages/checkout/*.astro.
+ */
+const shopifyHandle: string = import.meta.env.PUBLIC_SHOPIFY_PRODUCT_HANDLE ?? '';
+
+/**
  * Factual presentation data for the oil sprayer. Marketing copy is limited to
  * what is visible in the supplied product assets and scraper output.
  */
@@ -14,8 +26,9 @@ export const product = {
     'Recipiente de cocina con dos formas de servir: pulverización para repartir el aceite y vertido directo cuando necesitas más cantidad.',
 
   commerce: {
-    // Fail closed: no real Shopify handle was supplied for this product.
-    shopifyHandle: '',
+    shopifyHandle,
+    // No BXGY discount is configured in Shopify admin, and `packs` only holds
+    // a single 1-unit pack with freeUnits: 0 — nothing to activate yet.
     bundleOfferActive: false,
   },
 
