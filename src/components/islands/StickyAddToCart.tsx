@@ -79,7 +79,7 @@ export function StickyAddToCart({
         },
       ],
     });
-    void syncCartLine(variant.id, projection.totalUnits);
+    void syncCartLine(variant.id, projection.totalUnits, projection.priceCents);
   };
 
   const ctaText = soldOut ? soldOutLabel : isPending ? pendingLabel : cart?.line && inSync ? checkoutLabel : ctaLabel;

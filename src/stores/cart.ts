@@ -23,14 +23,18 @@ export const $cartError = atom<CartErrorKind>(null);
 // fires (trailing edge only).
 let inFlight: Promise<void> | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-let pendingArgs: { variantId: string; quantity: number } | null = null;
+let pendingArgs: { variantId: string; quantity: number; expectedTotalCents?: number } | null = null;
 let flushPromise: Promise<void> | null = null;
 let flushResolve: (() => void) | null = null;
 let flushReject: ((err: unknown) => void) | null = null;
 
-/** Debounced (400ms, trailing-edge only), serialized cart-line sync. */
-export function syncCartLine(variantId: string, quantity: number): Promise<void> {
-  pendingArgs = { variantId, quantity };
+/**
+ * Debounced (400ms, trailing-edge only), serialized cart-line sync.
+ * `expectedTotalCents` is the catalog projection for this (variant, quantity);
+ * see mutate() for why a mismatch forces the cart to be recreated.
+ */
+export function syncCartLine(variantId: string, quantity: number, expectedTotalCents?: number): Promise<void> {
+  pendingArgs = { variantId, quantity, expectedTotalCents };
 
   if (!flushPromise) {
     flushPromise = new Promise<void>((resolve, reject) => {
@@ -66,7 +70,7 @@ async function flush(): Promise<void> {
     return;
   }
 
-  const run = mutate(args.variantId, args.quantity);
+  const run = mutate(args.variantId, args.quantity, args.expectedTotalCents);
   inFlight = run;
   try {
     await run;
@@ -78,7 +82,7 @@ async function flush(): Promise<void> {
   }
 }
 
-async function mutate(variantId: string, quantity: number): Promise<void> {
+async function mutate(variantId: string, quantity: number, expectedTotalCents?: number): Promise<void> {
   const current = $cart.get();
   try {
     $cartError.set(null);
@@ -88,13 +92,28 @@ async function mutate(variantId: string, quantity: number): Promise<void> {
       $cartStatus.set('creating');
       snapshot = await cartCreate(variantId, quantity);
       persist(snapshot.id);
-    } else if (!current.line) {
-      $cartStatus.set('updating');
-      snapshot = await cartLinesAdd(current.id, variantId, quantity);
     } else {
       // Same OR different variant — always update-in-place (decision #5/#6 in design).
       $cartStatus.set('updating');
-      snapshot = await cartLinesUpdate(current.id, current.line.id, variantId, quantity);
+      snapshot = !current.line
+        ? await cartLinesAdd(current.id, variantId, quantity)
+        : await cartLinesUpdate(current.id, current.line.id, variantId, quantity);
+
+      // Shopify evaluates automatic discounts when a cart is CREATED and does
+      // NOT re-evaluate them on cartLinesAdd/Update. Verified 2026-08-28: a
+      // cart created at 07:27 (before the 5% discount was assigned to this
+      // product) still returned totalAmount 27,00 with discountAllocations []
+      // after being updated to quantity 2 at 07:46, while a cart created after
+      // the discount returned 25,66 for the same line. Storefront carts live
+      // ~10 days, and the id is persisted in localStorage, so every visitor
+      // who loaded the page before a pricing change would keep stale totals —
+      // and packDiscountBadge would hide the badge for all of them.
+      // Recreating once lets Shopify price the cart from scratch. No loop: the
+      // fresh snapshot is accepted as authoritative even if it still differs.
+      if (expectedTotalCents !== undefined && snapshot.line && snapshot.totalCents !== expectedTotalCents) {
+        snapshot = await cartCreate(variantId, quantity);
+        persist(snapshot.id);
+      }
     }
 
     // An empty cart (line removed via quantity 0) must be reset to null, NOT

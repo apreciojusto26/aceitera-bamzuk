@@ -72,7 +72,7 @@ export function BundleSelector({
           },
         ],
       });
-      void syncCartLine(variant.id, projection.totalUnits);
+      void syncCartLine(variant.id, projection.totalUnits, projection.priceCents);
     }
   };
 
