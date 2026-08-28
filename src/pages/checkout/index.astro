@@ -11,7 +11,9 @@ const commerce = commerceEnabled ? await getProductCommerce() : null;
 <Base title={commerce ? `Finalizar compra — ${product.brand}` : `Compra no disponible — ${product.brand}`} description={commerce ? 'Completa tus datos de envío y pago.' : 'La compra online todavía no está habilitada para este producto.'}>
   {
     commerce ? (
-      <main class="mx-auto max-w-lg px-5 py-8">
+      <main class="mx-auto w-full max-w-lg px-5 py-8 xl:max-w-[64rem]">
+        {/* xl:max-w matches CheckoutForm's `xl:grid-cols-[minmax(0,1fr)_21rem]`:
+            the 336px aside + 40px gap need room, or the form column collapses. */}
         <h1 class="mb-6 text-display">Finalizar compra</h1>
         <CheckoutForm client:load commerce={commerce} />
       </main>
