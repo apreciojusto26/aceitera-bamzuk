@@ -18,7 +18,10 @@ const baselineHashes = {
   'src/lib/shopify/cart.ts': '80d9d96121a5b9ef939255707c73e638ba2094f18e98b59975b1ac2c2097369c',
   'src/lib/shopify/client.ts': '8d0d6b3e89d67bc2b69e390e24ce7e5a818196196b5d059be78c354d87e02d9d',
   'src/lib/shopify/money.ts': 'ef6a9b8a199d0d422fa3772ffa61f1a83bd348309ba4596fa00f3aea85da0c01',
-  'src/lib/shopify/pricing.ts': '28dde6e9cf36c1d90c715ffcb8b3be0ec74aaaa48ebb5e766e043c658430dfb2',
+  // Baseline actualizado deliberadamente al portar `discountPercent` +
+  // `packDiscountBadge` desde drop-one-product. Cualquier otra deriva en este
+  // archivo sigue siendo un fallo.
+  'src/lib/shopify/pricing.ts': 'b66e56491b60c497c591f86de5eb9decaefeef41282c821096a3f9eea201d518',
   'src/lib/shopify/queries.ts': 'c64ae09c136f6e4e09e3a6e01faa9ec046e3ef7d18bfc64ef4fe468d8447e0e5',
   'src/lib/shopify/types.ts': 'aa28114de6d89b84a9628afa27cabf83afb1a53dac262b5d74ba85c87aa5ed12',
 } as const;

@@ -60,6 +60,7 @@ export interface PricePack {
   label: string;
   sublabel?: string; // 'El que más se lleva'
   savingsPct?: number; // descuento promocional del pack, p.ej. 15 -> "Ahorras 15%"
+  discountPercent?: number; // applied to the Shopify-derived unit total; never a hardcoded price
   badge?: string; // 'Más popular'
   popular?: boolean; // drives ribbon + default border emphasis
   freeGift?: boolean; // toggles the gift progress bar to 100%

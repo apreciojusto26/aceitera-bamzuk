@@ -118,15 +118,9 @@ export const product = {
       freeUnits: 0,
       label: '2 unidades',
       sublabel: 'Disponibilidad por confirmar',
-      default: false,
-      popular: false,
-    },
-    {
-      id: 'x3',
-      units: 3,
-      freeUnits: 0,
-      label: '3 unidades',
-      sublabel: 'Disponibilidad por confirmar',
+      // Refleja el descuento automático verificado en Shopify admin. Medido
+      // 2026-08-28 sobre ambas variantes: 27,00 -> 25,66 y 26,60 -> 25,28.
+      discountPercent: 5,
       default: false,
       popular: false,
     },

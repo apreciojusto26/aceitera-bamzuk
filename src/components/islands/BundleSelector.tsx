@@ -4,7 +4,7 @@ import { $cartError, $cartStatus, checkout, syncCartLine } from '@/stores/cart';
 import { $selectedPackId, $selectedVariantId } from '@/stores/checkout';
 import { useSelection } from '@/components/islands/parts/use-selection';
 import { VariantPicker } from '@/components/islands/parts/VariantPicker';
-import { packDisplayLabel, projectPack } from '@/lib/shopify/pricing';
+import { packDiscountBadge, packDisplayLabel, projectPack } from '@/lib/shopify/pricing';
 import { formatPrice } from '@/lib/format';
 import { centsToUnits, trackEvent } from '@/lib/analytics';
 import type { ProductCommerce } from '@/lib/shopify/types';
@@ -109,7 +109,10 @@ export function BundleSelector({
           const checked = p.id === pack.id;
           const pProjection = projectPack(variant, p, bundleOfferActive);
           const quantity = pProjection.totalUnits;
-          const displayPriceCents = checked && cart?.line && inSync ? cart.totalCents : pProjection.priceCents;
+          const authoritativeTotalCents = checked && cart?.line && inSync ? cart.totalCents : null;
+          const discountBadge = packDiscountBadge(p, pProjection, authoritativeTotalCents);
+          const badge = p.discountPercent ? discountBadge : p.badge;
+          const displayPriceCents = authoritativeTotalCents ?? pProjection.priceCents;
           const savingsCents = Math.max(0, oneUnitPriceCents * quantity - displayPriceCents);
 
           return (
@@ -117,9 +120,9 @@ export function BundleSelector({
               key={p.id}
               className="has-[:checked]:border-grape has-[:checked]:bg-grape-tint has-[:checked]:shadow-lift relative flex items-center gap-3 rounded-tile border-2 border-graphite/10 bg-white p-4 transition"
             >
-              {quantity === 2 && p.badge && (
-                <span className="absolute -top-2.5 left-4 rounded-pill bg-amber-600 px-2.5 py-0.5 text-[0.625rem] font-black uppercase tracking-widest text-white shadow-card">
-                  {p.badge}
+              {quantity === 2 && badge && (
+                <span className="absolute -top-2.5 left-4 rounded-pill bg-amber-600 px-2.5 py-0.5 text-[0.625rem] font-black tracking-widest text-white shadow-card">
+                  {badge}
                 </span>
               )}
               <input
