@@ -17,7 +17,7 @@ vi.stubGlobal('localStorage', {
   removeItem: (k: string) => void delete store[k],
 });
 
-const { $cart, syncCartLine } = await import('@/stores/cart');
+const { $cart, syncCartLine, revalidateCartPricing } = await import('@/stores/cart');
 
 const snapshot = (totalCents: number, quantity: number) => ({
   id: 'gid://shopify/Cart/abc',
@@ -79,6 +79,47 @@ describe('syncCartLine — stale automatic-discount recovery', () => {
 
     await flush(syncCartLine('v1', 2));
 
+    expect(mocks.cartCreate).not.toHaveBeenCalled();
+  });
+});
+
+describe('revalidateCartPricing — carrito rehidratado con precio obsoleto', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    Object.values(mocks).forEach((m) => m.mockReset());
+    store['oil-sprayer:cartId'] = 'gid://shopify/Cart/abc';
+  });
+
+  it('descarta el carrito viejo y lo recrea cuando el total no coincide', async () => {
+    $cart.set(snapshot(2700, 2));
+    mocks.cartCreate.mockResolvedValue(snapshot(2566, 2));
+
+    revalidateCartPricing(2566);
+    // El id se descarta de inmediato para que la sync tome el camino de create.
+    expect($cart.get()).toBeNull();
+
+    await vi.advanceTimersByTimeAsync(500);
+    expect(mocks.cartCreate).toHaveBeenCalledWith('v1', 2);
+    expect(mocks.cartLinesUpdate).not.toHaveBeenCalled();
+    expect($cart.get()?.totalCents).toBe(2566);
+  });
+
+  it('no toca nada cuando el carrito ya coincide con el catálogo', async () => {
+    $cart.set(snapshot(2566, 2));
+
+    revalidateCartPricing(2566);
+
+    await vi.advanceTimersByTimeAsync(500);
+    expect(mocks.cartCreate).not.toHaveBeenCalled();
+    expect($cart.get()?.totalCents).toBe(2566);
+  });
+
+  it('ignora un carrito vacío', async () => {
+    $cart.set(null);
+
+    revalidateCartPricing(2566);
+
+    await vi.advanceTimersByTimeAsync(500);
     expect(mocks.cartCreate).not.toHaveBeenCalled();
   });
 });

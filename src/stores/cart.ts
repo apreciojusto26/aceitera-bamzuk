@@ -198,6 +198,28 @@ export function pruneStaleLine(knownVariantIds: ReadonlySet<string>): void {
   }
 }
 
+/**
+ * Shopify prices automatic discounts when a cart is CREATED and never
+ * re-evaluates them afterwards, so a cart that predates a pricing change keeps
+ * stale totals for its whole ~10-day life. Because the cart id is persisted in
+ * localStorage, a visitor who loaded the page before the change would keep
+ * seeing the old total — and, worse, `inSync` in BundleSelector would treat it
+ * as authoritative and hide the discount badge, with no network call to notice.
+ *
+ * Discarding the id makes the next sync take the create path, so Shopify
+ * prices the line from scratch. Called once by use-selection.ts, the only place
+ * holding live catalog prices (same arrangement as pruneStaleLine).
+ */
+export function revalidateCartPricing(expectedTotalCents: number): void {
+  const cart = $cart.get();
+  if (!cart?.line || cart.totalCents === expectedTotalCents) return;
+
+  const { variantId, quantity } = cart.line;
+  localStorage.removeItem(KEY);
+  $cart.set(null);
+  void syncCartLine(variantId, quantity, expectedTotalCents).catch(() => undefined);
+}
+
 function persist(id: string): void {
   localStorage.setItem(KEY, id);
 }
