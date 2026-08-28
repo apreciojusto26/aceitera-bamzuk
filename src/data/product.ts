@@ -108,7 +108,6 @@ export const product = {
       units: 1,
       freeUnits: 0,
       label: '1 unidad',
-      sublabel: 'Disponibilidad por confirmar',
       default: true,
       popular: false,
     },
@@ -117,7 +116,6 @@ export const product = {
       units: 2,
       freeUnits: 0,
       label: '2 unidades',
-      sublabel: 'Disponibilidad por confirmar',
       // Refleja el descuento automático verificado en Shopify admin. Medido
       // 2026-08-28 sobre ambas variantes: 27,00 -> 25,66 y 26,60 -> 25,28.
       discountPercent: 5,
