@@ -31,8 +31,12 @@ const commerce = commerceEnabled ? await getProductCommerce() : null;
   <UtilityBar />
   <SiteHeader />
   <main>
-    <Hero />
-    <BuyBox />
+    <div class="bg-white">
+      <div class="xl:mx-auto xl:grid xl:w-full xl:max-w-[80rem] xl:grid-cols-[minmax(0,1.1fr)_minmax(25rem,0.9fr)] xl:items-start xl:gap-8 xl:px-8 xl:py-8">
+        <Hero />
+        <BuyBox />
+      </div>
+    </div>
     <Benefits />
     <Gallery />
     <Specifications />
