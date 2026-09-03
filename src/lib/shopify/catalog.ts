@@ -2,6 +2,7 @@ import { storefront, ShopifyError } from '@/lib/shopify/client';
 import { moneyToCents } from '@/lib/shopify/money';
 import { PRODUCT_QUERY } from '@/lib/shopify/queries';
 import type { ProductCommerce, VariantOption } from '@/lib/shopify/types';
+import { formatVariantLabel } from '@/lib/shopify/variant-label';
 import { product as productContent } from '@/data/product';
 
 interface ProductQueryResponse {
@@ -74,7 +75,7 @@ async function fetchProductCommerce(): Promise<ProductCommerce> {
     const imageIndex = node.image ? images.findIndex((img) => img.url === node.image!.url) : -1;
     return {
       id: node.id,
-      title: node.title,
+      title: formatVariantLabel(node.title),
       optionValue,
       availableForSale: node.availableForSale,
       unitPriceCents: moneyToCents(node.price.amount),

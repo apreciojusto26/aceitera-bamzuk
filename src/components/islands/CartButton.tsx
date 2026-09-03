@@ -11,7 +11,7 @@ export function CartButton() {
       type="button"
       onClick={() => $isCartOpen.set(true)}
       aria-label={`Abrir carrito${count > 0 ? `, ${count} ${count === 1 ? 'artículo' : 'artículos'}` : ''}`}
-      className="relative size-6 text-purple-800 motion-safe:transition hover:text-purple-700"
+      className="relative size-6 text-grape motion-safe:transition hover:text-grape-dark"
     >
       <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true" focusable="false">
         <path

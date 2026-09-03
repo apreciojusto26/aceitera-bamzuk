@@ -32,7 +32,7 @@ export const product = {
     bundleOfferActive: false,
   },
 
-  variantGroupLabel: 'Elige una opción disponible',
+  variantGroupLabel: 'Elige tu color',
 
   errors: {
     network: 'No pudimos conectar con la tienda. Prueba de nuevo en unos segundos.',
