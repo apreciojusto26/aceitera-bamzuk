@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest';
 const heroSource = readFileSync(resolve(process.cwd(), 'src/components/sections/03-hero.astro'), 'utf8');
 const pageSource = readFileSync(resolve(process.cwd(), 'src/pages/index.astro'), 'utf8');
 const buyBoxSource = readFileSync(resolve(process.cwd(), 'src/components/sections/05-buy-box.astro'), 'utf8');
+const productSource = readFileSync(resolve(process.cwd(), 'src/data/product.ts'), 'utf8');
+const imageSource = readFileSync(resolve(process.cwd(), 'src/data/images.ts'), 'utf8');
 
 describe('product hero', () => {
   it('uses the AstraVibe single-column composition', () => {
@@ -22,5 +24,12 @@ describe('product hero', () => {
     expect(buyBoxSource).toContain("import PaymentLogos from '@/components/ui/PaymentLogos.astro';");
     expect(buyBoxSource).toContain('<h2 class="text-display">{commerce.title}</h2>');
     expect(buyBoxSource).toContain('<PaymentLogos />');
+  });
+
+  it('uses the six supplied hero images', () => {
+    for (const imageNumber of [1, 2, 3, 4, 5, 6]) {
+      expect(imageSource).toContain(`import hero${imageNumber} from '@/assets/product/hero/${imageNumber}.png';`);
+      expect(productSource).toContain(`asset: 'hero-${String(imageNumber).padStart(2, '0')}'`);
+    }
   });
 });
