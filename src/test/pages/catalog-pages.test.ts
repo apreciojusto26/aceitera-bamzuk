@@ -34,11 +34,38 @@ describe('catalog-only page boundaries', () => {
     expect(base).not.toContain('localhost');
   });
 
-  it('uses a main landmark and does not imply nonexistent legal pages', () => {
+  it('uses a main landmark and links every footer destination to a real page or storefront anchor', () => {
     expect(source('src/pages/index.astro')).toContain('<main>');
     const footer = source('src/components/sections/14-site-footer.astro');
-    expect(footer).not.toContain('Términos y condiciones');
-    expect(footer).not.toContain('Privacidad');
+    expect(footer).toContain('Términos y condiciones');
+    expect(footer).toContain('Privacidad');
+
+    for (const href of [
+      '/#como-funciona',
+      '/#faq',
+      '/#garantia',
+      '/legal/envios',
+      '/legal/devoluciones',
+      '/contacto',
+      '/legal/aviso-legal',
+      '/legal/terminos',
+      '/legal/privacidad',
+      '/legal/cookies',
+    ]) {
+      expect(footer).toContain(`href: '${href}'`);
+    }
+
+    for (const page of [
+      'src/pages/contacto.astro',
+      'src/pages/legal/aviso-legal.astro',
+      'src/pages/legal/cookies.astro',
+      'src/pages/legal/devoluciones.astro',
+      'src/pages/legal/envios.astro',
+      'src/pages/legal/privacidad.astro',
+      'src/pages/legal/terminos.astro',
+    ]) {
+      expect(source(page)).toContain("import Legal from '@/layouts/Legal.astro';");
+    }
   });
 
   it('does not render the source manufacturer as public branding', () => {
